@@ -1,0 +1,63 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <form
+      (ngSubmit)="onSignin()"
+      #loginFormEl
+      [formGroup]="loginForm"
+      id="signin-form"
+    >
+      <div class="form-group">
+        <label for="email">Mail</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          formControlName="email"
+          class="form-control"
+          [class.is-invalid]="
+            email.dirty &&
+            email.errors &&
+            (email.hasError('required') == true ||
+              email.hasError('email') == true)
+          "
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          formControlName="password"
+          class="form-control"
+          [class.is-invalid]="
+            password.dirty &&
+            password.errors &&
+            password.hasError('required') == true
+          "
+        />
+      </div>
+      <div
+        class="alert alert-danger"
+        role="alert"
+        *ngIf="password.value == '' && formErrorMessage"
+      >
+        {{ formErrorMessage }}
+      </div>
+      <button
+        class="btn btn-primary"
+        id="signin-btn"
+        type="submit"
+        [disabled]="loginForm.pristine == true || loginForm.invalid"
+      >
+        Sign In
+        <span class="spinner" *ngIf="submitting">
+          loading ..
+        </span>
+      </button>
+      <a class="ml-3" routerLink="/auth/register"
+        >Don't have an account yet! create one here</a
+      >
+    </form>
+  </div>
+</div>

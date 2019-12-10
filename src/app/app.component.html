@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a routerLink="/" class="navbar-brand">Brand</a>
+    </div>
+    <button
+      class="navbar-toggler"
+      type="button"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <ng-container *ngIf="!isAuthenticated">
+          <li><a routerLink="/auth/register" class="ml-3">Register</a></li>
+          <li><a routerLink="/auth/login" class="ml-3">Login</a></li>
+        </ng-container>
+
+        <li class="ml-3">
+          <a
+            style="cursor: pointer;"
+            (click)="onLogout()"
+            *ngIf="isAuthenticated"
+            >Logout</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

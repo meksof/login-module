@@ -1,0 +1,40 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <form (ngSubmit)="onSignup(f)" #f="ngForm">
+      <div class="form-group">
+        <label for="email">Mail</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          ngModel
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          ngModel
+          class="form-control"
+        />
+      </div>
+      <div
+        id="error-message"
+        *ngIf="signupError != undefined"
+        class="alert alert-danger"
+        role="alert"
+      >
+        {{ signupError }}
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="!f.valid">
+        Sign Up
+        <span class="spinner" *ngIf="submitting">
+          loading ..
+        </span>
+      </button>
+    </form>
+  </div>
+</div>

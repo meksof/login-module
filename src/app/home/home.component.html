@@ -1,0 +1,5 @@
+<h1>Home page</h1>
+<a routerLink="/auth/login" id="login-btn" *ngIf="!isAuthenticated"
+  >Please login first</a
+>
+<lm-user-credentials *ngIf="isAuthenticated"></lm-user-credentials>

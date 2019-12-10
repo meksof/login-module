@@ -1,0 +1,28 @@
+.spinner {
+    line-height: 1;
+    text-indent: 9999999px;
+    font-size: 0px;
+    margin-left: 12px;
+}
+.spinner::before {
+    content: ' ';
+    background-image: url(./assets/spinner-solid.svg);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    display: inline-block;
+    vertical-align: bottom;
+    animation: fa-spin 2s infinite linear;
+}
+
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    
+    100% {
+        transform: rotate(1turn);
+    }
+}
