@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { AuthService } from '../auth.service';
@@ -9,12 +9,10 @@ import { Router } from '@angular/router';
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent {
   signupError: string;
   submitting = false;
   constructor(private authService: AuthService, private router: Router) {}
-
-  ngOnInit() {}
 
   onSignup(form: NgForm) {
     this.signupError = undefined;

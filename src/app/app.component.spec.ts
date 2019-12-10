@@ -6,10 +6,11 @@ import { of, BehaviorSubject } from 'rxjs';
 describe('AppComponent', () => {
   let appComponent: AppComponent;
   let authService: Spy<AuthService>;
-  let authFirstState = null;
+  const authInitialState = null;
 
-  let authSrvStub = {
-    isAuthenticated$: new BehaviorSubject(authFirstState),
+  const authSrvStub = {
+    isAuthenticated$: new BehaviorSubject(authInitialState),
+    // BehaviorSubject Here   -----^   reflects a synchronous test
     signupUser: jasmine.createSpy('signupUser'),
     signinUser: jasmine.createSpy('signinUser'),
     logout: jasmine.createSpy('logout'),
@@ -31,16 +32,16 @@ describe('AppComponent', () => {
   });
 
   describe('INIT: check user auth state at component init', () => {
-    When(
-      fakeAsync(() => {
-        appComponent.ngOnInit().subscribe(authState => {
-          tick();
-        });
-      })
-    );
+    When(() => {
+      appComponent.ngOnInit(); // <===== no need to fakeSync it,
+      // since BehaviorSubject (unlike promise) is synchronous for the first run
+    });
 
-    Then(() => {
-      expect(authService.isAuthenticated$).toBeFalsy();
+    Then(done => {
+      authService.isAuthenticated$.subscribe(() => {
+        expect(appComponent.isAuthenticated).toEqual(authInitialState);
+        done();
+      });
     });
   });
 });

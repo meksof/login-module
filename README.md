@@ -1,7 +1,11 @@
 # LoginModule
 
 Repository for [medium tutorial article](https://medium.com/@meksof/why-using-ngmodule-in-your-angular-2-application-is-always-a-best-practice-5e72d39ead47) on how to make your first NgModule. link to medium article.
-The Authentication service was made using [Firebase](https://console.firebase.google.com/), so you need to create a firebase app first then put your  `apiKey` and `authDomain` inside `app.component.ts`.
+The Authentication service was made using [Firebase](https://console.firebase.google.com/), so you need to:
+
+- Create a firebase app first
+- Create `.env` file in the root folder
+- then put your `apiKey` and `authDomain` respectively for `FIREBASE_APIKEY` and `FIREBASE_AUTHDOMAIN` keys.
 
 ## Development server
 
@@ -21,7 +25,9 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Add a real authenticated user into Firebase console,
+Add `FIREBASE_USER_EMAIL` `FIREBASE_USER_PASSWORD` keys to your `.env` file.
+Then Run `npm run e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Further help
 

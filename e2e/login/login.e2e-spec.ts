@@ -1,10 +1,10 @@
 import { LoginPage } from './login.po';
-import { browser, by, element, logging } from 'protractor';
+import { browser, by, logging } from 'protractor';
 require('dotenv').load();
 const checkCurrentUrl = url => {
   return browser.getCurrentUrl().then(
     actualUrl => {
-      console.log(actualUrl);
+      // console.log(`[actual url] => ${actualUrl}`);
       return url === actualUrl;
     },
     error => {
@@ -70,7 +70,7 @@ describe('Login Page:', () => {
     // For the test app's login, we know it's done when it redirects to
     // '/'.
 
-    checkCurrentUrl(process.env.E2E_TESTING_WEBSITE_URL)
+    checkCurrentUrl(browser.baseUrl)
       .then(success => {
         expect(success).toEqual(true);
         done();
