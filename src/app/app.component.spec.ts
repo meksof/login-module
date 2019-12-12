@@ -1,8 +1,8 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { AuthService } from './auth/auth.service';
-import { Spy, createSpyFromClass } from 'jasmine-auto-spies';
-import { of, BehaviorSubject } from 'rxjs';
+import { Spy } from 'jasmine-auto-spies';
+import { BehaviorSubject } from 'rxjs';
 describe('AppComponent', () => {
   let appComponent: AppComponent;
   let authService: Spy<AuthService>;

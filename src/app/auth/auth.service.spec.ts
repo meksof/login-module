@@ -1,19 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { BehaviorSubject, of, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
-const fakeAuthState = new BehaviorSubject(null);
-
-const credentialsMock = {
-  email: 'abc@123.com',
-  password: 'password'
-};
-
-const userMock = {
-  uid: 'ABC123',
-  email: credentialsMock.email
-};
+const fakeAuthState = new BehaviorSubject(null); // AngularFireAuth AuthState
+let credentialsMock, userMock; // Firebase Auth credentials
 
 const fakeSignInHandler = (email, password): Promise<any> => {
   fakeAuthState.next(userMock);
@@ -44,6 +35,7 @@ describe('AuthService', () => {
   let isAuthRef: boolean;
   let isAuth$: Subscription;
 
+  // component config
   Given(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -56,10 +48,24 @@ describe('AuthService', () => {
     });
     serviceUnderTest = TestBed.get(AuthService);
     afAuth = TestBed.get(AngularFireAuth);
+  });
+
+  Given(() => {
     // Get auth subscription
     isAuth$ = serviceUnderTest.isAuthenticated$.subscribe(authResult => {
       isAuthRef = authResult;
     });
+    // Set Firebase Auth credentials for all tests
+    // Firebase user Auth credentials
+    credentialsMock = {
+      email: 'abc@123.com',
+      password: 'password'
+    };
+    // Firebase user object
+    userMock = {
+      uid: 'ABC123',
+      email: 'abc@123.com'
+    };
   });
 
   describe('User should not be initially authenticated', () => {
@@ -120,8 +126,8 @@ describe('AuthService', () => {
   });
 
   afterEach(() => {
-    fakeAuthState.next(null);
-
+    fakeAuthState.next(null); // logout
+    // unsubscribe and release memory
     isAuth$.unsubscribe();
   });
 });
