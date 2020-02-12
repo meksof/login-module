@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import * as firebase from 'firebase';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lm-home',
@@ -9,13 +9,11 @@ import * as firebase from 'firebase';
 })
 export class HomeComponent implements OnInit {
   token: string;
-  isAuthenticated = false;
+  isAuthenticated$: Observable<boolean>;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.authService.isAuthenticated$.subscribe(authState => {
-      this.isAuthenticated = authState;
-    });
+    this.isAuthenticated$ = this.authService.authState$;
   }
 }

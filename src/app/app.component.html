@@ -14,7 +14,7 @@
 
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
-        <ng-container *ngIf="!isAuthenticated">
+        <ng-container *ngIf="!isAuthenticated$ | async">
           <li><a routerLink="/auth/register" class="ml-3">Register</a></li>
           <li><a routerLink="/auth/login" class="ml-3">Login</a></li>
         </ng-container>
@@ -23,7 +23,7 @@
           <a
             style="cursor: pointer;"
             (click)="onLogout()"
-            *ngIf="isAuthenticated"
+            *ngIf="isAuthenticated$ | async"
             >Logout</a
           >
         </li>

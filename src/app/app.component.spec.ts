@@ -2,20 +2,17 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { AuthService } from './auth/auth.service';
 import { Spy } from 'jasmine-auto-spies';
-import { BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 describe('AppComponent', () => {
   let appComponent: AppComponent;
   let authService: Spy<AuthService>;
-  const authInitialState = null;
+  let authInitialState = false;
 
-  const authSrvStub = {
-    isAuthenticated$: new BehaviorSubject(authInitialState),
-    // BehaviorSubject Here   -----^   reflects a synchronous test
-    signupUser: jasmine.createSpy('signupUser'),
-    signinUser: jasmine.createSpy('signinUser'),
-    logout: jasmine.createSpy('logout'),
-    getToken: jasmine.createSpy('getToken')
-  };
+  class AuthSrvStub {
+    get authState$() {
+      return of(authInitialState);
+    }
+  }
 
   Given(() => {
     TestBed.configureTestingModule({
@@ -23,7 +20,7 @@ describe('AppComponent', () => {
         AppComponent,
         {
           provide: AuthService,
-          useValue: authSrvStub
+          useClass: AuthSrvStub
         }
       ]
     });
@@ -32,16 +29,30 @@ describe('AppComponent', () => {
   });
 
   describe('INIT: check user auth state at component init', () => {
-    When(() => {
-      appComponent.ngOnInit(); // <===== no need to fakeSync it,
-      // since BehaviorSubject (unlike promise) is synchronous for the first run
+    let fakeAuthState = true;
+    Given(() => {
+      spyOnProperty(authService, 'authState$', 'get').and.returnValue(
+        of(fakeAuthState)
+      );
     });
 
-    Then(done => {
-      authService.isAuthenticated$.subscribe(() => {
-        expect(appComponent.isAuthenticated).toEqual(authInitialState);
-        done();
-      });
+    When(() => {
+      appComponent.ngOnInit();
     });
+
+    Then(
+      fakeAsync(() => {
+        // Since isAuthenticated$ is used inside the template
+        appComponent.isAuthenticated$.subscribe(authRef => {
+          expect(authRef).toBe(fakeAuthState);
+          tick();
+        });
+      })
+    );
+  });
+
+  describe(`GIVEN For some reason token was expired
+            THEN isAuthenticated should reflect that`, () => {
+    // authService.getToken.and.returnValue(null);
   });
 });

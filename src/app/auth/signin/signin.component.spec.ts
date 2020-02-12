@@ -1,16 +1,15 @@
-import { TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
 import { Spy, createSpyFromClass } from 'jasmine-auto-spies';
 import { SigninComponent } from './signin.component';
-import { AuthService } from '../auth.service';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 describe('SigninComponent', () => {
-  let componentUnderTest: SigninComponent;
+  let signinComponent: SigninComponent;
   let authService: Spy<AuthService>;
-  let router: Router;
-  const routerSpy = {
-    navigate: jasmine.createSpy('navigate')
-  };
-
+  let router: Spy<Router>;
+  const validEmail = 'valid@email.com';
+  const validPassword = '12345678';
   Given(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -21,38 +20,50 @@ describe('SigninComponent', () => {
         },
         {
           provide: Router,
-          useValue: routerSpy
+          useValue: {
+            navigate: jasmine.createSpy('navigate')
+          }
         }
       ]
     });
-    componentUnderTest = TestBed.get(SigninComponent);
+    signinComponent = TestBed.get(SigninComponent);
     authService = TestBed.get(AuthService);
     router = TestBed.get(Router);
   });
+
+  Given(() => {
+    // Isolating reactive FORM from component
+    // create new Instance of Login Form for test isolation purpose
+    signinComponent.email = new FormControl('');
+    signinComponent.password = new FormControl('');
+    signinComponent.loginForm = new FormGroup({
+      email: signinComponent.email,
+      password: signinComponent.password
+    });
+  });
   describe('METHOD: onSignin', () => {
-    let fakeCredentials = {
-      email: 'fakeEmail@fake.com',
-      password: 'fakePassword'
-    };
     When(
       fakeAsync(() => {
-        componentUnderTest.onSignin();
-        tick();
+        signinComponent.onSignin();
       })
     );
-    describe('GIVEN user provided correct email and password THEN navigate to home', () => {
+    describe(`GIVEN a valid Form
+              THEN should process login (signin User)
+                  AND redirect user to home page`, () => {
       Given(() => {
-        // user provided correct email and password
-        componentUnderTest.ngOnInit(); // init formGoup instance
-        componentUnderTest.loginForm.setValue(fakeCredentials);
-        authService.signinUser.and.resolveWith(true);
+        // a valid Form
+        signinComponent.email.setValue(validEmail);
+        signinComponent.password.setValue(validPassword);
+        authService.signinUser
+          .mustBeCalledWith(validEmail, validPassword)
+          .resolveWith({} as firebase.auth.UserCredential);
       });
       Then(() => {
-        expect(authService.signinUser).toHaveBeenCalledWith(
-          fakeCredentials.email,
-          fakeCredentials.password
-        );
-        // navigate to home
+        // According to this issue: https://github.com/hirezio/jasmine-auto-spies/issues/18
+        // `mustBeCalledWith` should take care of handling method was not called Error,
+        // But while waiting for a fix we'r gone make sure the method 'authService.signinUser' was called
+        //  AND add .toHaveBeenCalled here manualy:
+        expect(authService.signinUser).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalledWith(['/']);
       });
     });

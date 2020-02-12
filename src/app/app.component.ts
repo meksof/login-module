@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-
 import { AuthService } from './auth/auth.service';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'lm-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  isAuthenticated: boolean;
+  isAuthenticated$: Observable<boolean>;
   constructor(public authService: AuthService) {}
 
   onLogout() {
@@ -15,10 +15,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    const isAuthRef = this.authService.isAuthenticated$;
-    isAuthRef.subscribe(authState => {
-      this.isAuthenticated = authState;
-    });
-    return isAuthRef;
+    this.isAuthenticated$ = this.authService.authState$;
   }
 }
