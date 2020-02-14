@@ -21,6 +21,13 @@ module.exports = function(config) {
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true
     },
+    // headless chrome used on deployment
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
 
     // BUILD
     frameworks: ['jasmine-given', 'jasmine', '@angular-devkit/build-angular'],
