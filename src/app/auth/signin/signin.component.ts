@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
@@ -27,24 +27,24 @@ export class SigninComponent implements OnInit {
     });
   }
 
-  onSignin() {
-    if (this.loginForm.valid) {
-      const email = this.loginForm.value ? this.loginForm.value.email : '';
-      const password = this.loginForm.value
-        ? this.loginForm.value.password
-        : '';
-      this.submitting = true;
-      this.authService
-        .signinUser(email, password)
-        .then(result => {
-          this.submitting = false;
-          this.router.navigate(['/']);
-        })
-        .catch(error => {
-          this.submitting = false;
-          this.formErrorMessage = error.message;
-          this.password.setValue('');
-        });
+  onSignin(): void | boolean {
+    if (this.loginForm.invalid) {
+      return false;
     }
+    const email = this.loginForm.value.email;
+    const password = this.loginForm.value.password;
+    this.submitting = true;
+    this.authService.signinUser(email, password).then(
+      result => {
+        this.submitting = false;
+        this.router.navigate(['/']);
+      },
+      error => {
+        // Handle Errors here.
+        // const errorCode = error.code;
+        const errorMessage = error.message;
+        this.formErrorMessage = errorMessage;
+      }
+    );
   }
 }

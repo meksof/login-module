@@ -4,20 +4,12 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
 const fakeAuthState = new BehaviorSubject(null);
-
-const credentialsMock = {
-  email: 'abc@123.com',
-  password: 'password'
-};
-
-const userMock = {
-  uid: 'ABC123',
-  email: credentialsMock.email
-};
+let fakeCredentials;
+let fakeUser;
 
 const fakeSignInHandler = (email, password): Promise<any> => {
-  fakeAuthState.next(userMock);
-  return Promise.resolve(userMock);
+  fakeAuthState.next(fakeUser);
+  return Promise.resolve({});
 };
 
 const fakeSignOutHandler = (): Promise<any> => {
@@ -73,43 +65,61 @@ describe('AuthService', () => {
   });
 
   describe('METHOD: signinUser', () => {
+    Given(() => {
+      fakeCredentials = {
+        email: 'abc@123.com',
+        password: 'password'
+      };
+    });
     When(() => {
       serviceUnderTest.signinUser(
-        credentialsMock.email,
-        credentialsMock.password
+        fakeCredentials.email,
+        fakeCredentials.password
       );
     });
 
     Then(() => {
       expect(afAuth.auth.signInWithEmailAndPassword).toHaveBeenCalledWith(
-        credentialsMock.email,
-        credentialsMock.password
+        fakeCredentials.email,
+        fakeCredentials.password
       );
       expect(isAuthRef).toEqual(true);
     });
   });
 
   describe('METHOD: signupUser', () => {
+    Given(() => {
+      fakeCredentials = {
+        email: 'abc@123.com',
+        password: 'password'
+      };
+    });
     When(() => {
       serviceUnderTest.signupUser(
-        credentialsMock.email,
-        credentialsMock.password
+        fakeCredentials.email,
+        fakeCredentials.password
       );
     });
 
     Then(() => {
       expect(afAuth.auth.createUserWithEmailAndPassword).toHaveBeenCalledWith(
-        credentialsMock.email,
-        credentialsMock.password
+        fakeCredentials.email,
+        fakeCredentials.password
       );
       expect(isAuthRef).toEqual(true);
     });
   });
 
   describe('METHOD: logout', () => {
+    Given(() => {
+      fakeUser = {
+        uid: 'ABC123',
+        email: 'fakeEmail'
+      };
+    });
     describe('GIVEN when user is already logged in THEN he should be logged out', () => {
       Given(() => {
-        fakeAuthState.next(userMock);
+        fakeAuthState.next(fakeUser);
         expect(isAuthRef).toBe(true);
       });
       When(() => {

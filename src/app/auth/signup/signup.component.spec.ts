@@ -76,7 +76,7 @@ describe('SignupComponent', () => {
       Then(() => {
         // create user and redirect to home page
         // According to this issue: https://github.com/hirezio/jasmine-auto-spies/issues/18
-        // `mustBeCalledWith` should take care of handling method was not called Error,
+        // `mustBeCalledWith` should take care of handling "method was not called" Error,
         // But while waiting for a fix we'r gone make sure the method 'authService.signinUser' was called
         //  AND add .toHaveBeenCalled here manualy:
         expect(authService.signupUser).toHaveBeenCalled();

@@ -12,6 +12,9 @@ describe('AppComponent', () => {
     get authState$() {
       return of(authInitialState);
     }
+    logout(): Promise<void> {
+      return Promise.resolve();
+    }
   }
 
   Given(() => {
@@ -36,9 +39,12 @@ describe('AppComponent', () => {
       );
     });
 
-    When(() => {
-      appComponent.ngOnInit();
-    });
+    When(
+      fakeAsync(() => {
+        appComponent.ngOnInit();
+        tick();
+      })
+    );
 
     Then(
       fakeAsync(() => {
@@ -51,8 +57,12 @@ describe('AppComponent', () => {
     );
   });
 
-  describe(`GIVEN For some reason token was expired
-            THEN isAuthenticated should reflect that`, () => {
-    // authService.getToken.and.returnValue(null);
+  describe('METHOD: onLogout', () => {
+    When(() => {
+      appComponent.onLogout();
+    });
+    Then(() => {
+      expect(authService.logout).toHaveBeenCalled();
+    });
   });
 });
