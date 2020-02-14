@@ -34,7 +34,10 @@ const angularFireAuthStub = {
     signInWithEmailAndPassword: jasmine
       .createSpy('signInWithEmailAndPassword')
       .and.callFake(fakeSignInHandler),
-    signOut: jasmine.createSpy('signOut').and.callFake(fakeSignOutHandler)
+    signOut: jasmine.createSpy('signOut').and.callFake(fakeSignOutHandler),
+    currentUser: {
+      getIdToken: jasmine.createSpy('getIdToken')
+    }
   }
 };
 
@@ -115,6 +118,18 @@ describe('AuthService', () => {
 
       Then(() => {
         expect(isAuthRef).toEqual(false);
+      });
+    });
+  });
+
+  describe('METHOD: getToken', () => {
+    When(() => {
+      serviceUnderTest.getToken();
+    });
+    describe('THEN should return token from Firebase Auth service', () => {
+      Then(() => {
+        // should return token from Firebase Auth service
+        expect(afAuth.auth.currentUser.getIdToken).toHaveBeenCalled();
       });
     });
   });

@@ -47,6 +47,7 @@ describe('SigninComponent', () => {
         signinComponent.onSignin();
       })
     );
+    // Happy path :)
     describe(`GIVEN a valid Form
               THEN should process login (signin User)
                   AND redirect user to home page`, () => {
@@ -65,6 +66,20 @@ describe('SigninComponent', () => {
         //  AND add .toHaveBeenCalled here manualy:
         expect(authService.signinUser).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalledWith(['/']);
+      });
+    });
+    // Unhappy path :(
+    describe('GIVEN One error occured during user creation THEN should display it', () => {
+      const fakeMessageError = 'Fake message';
+      Given(() => {
+        // One error occured during user creation
+        authService.signinUser.and.rejectWith({
+          message: fakeMessageError
+        });
+      });
+      Then(() => {
+        // should display it
+        expect(signinComponent.formErrorMessage).toBe(fakeMessageError);
       });
     });
   });

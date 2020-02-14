@@ -9,15 +9,21 @@ export class AuthService {
   }
   constructor(private afAuth: AngularFireAuth) {}
 
-  signupUser(email: string, password: string): Promise<any> {
+  signupUser(
+    email: string,
+    password: string
+  ): Promise<firebase.auth.UserCredential> {
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password);
   }
 
-  signinUser(email: string, password: string): Promise<any> {
+  signinUser(
+    email: string,
+    password: string
+  ): Promise<firebase.auth.UserCredential> {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password);
   }
 
-  logout(): Promise<any> {
+  logout(): Promise<void> {
     return this.afAuth.auth.signOut().then(response => {
       localStorage.clear();
     });

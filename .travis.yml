@@ -1,0 +1,20 @@
+dist: trusty
+
+language: node_js
+node_js:
+  - '10'
+
+addons:
+  chrome: stable
+
+cache:
+  directories:
+    - ./node_modules
+
+install:
+  - npm install
+
+script:
+  - npm run test:run-once -- --no-progress --browsers=ChromeHeadlessNoSandbox
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
