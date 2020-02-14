@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/meksof/login-module.svg?branch=master)](https://travis-ci.com/meksof/login-module)
+[![codecov](https://codecov.io/gh/meksof/login-module/branch/master/graph/badge.svg)](https://codecov.io/gh/meksof/login-module)
+
 # LoginModule
 
 Repository for [medium tutorial article](https://medium.com/@meksof/why-using-ngmodule-in-your-angular-2-application-is-always-a-best-practice-5e72d39ead47) on how to make your first NgModule. link to medium article.
