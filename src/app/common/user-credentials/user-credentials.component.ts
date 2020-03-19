@@ -7,19 +7,13 @@ import { AuthService } from '../../auth/auth.service';
   styleUrls: ['./user-credentials.component.css']
 })
 export class UserCredentialsComponent implements OnInit {
-
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   token: string;
 
   ngOnInit() {
-    this.getToken();
-  }
-
-  getToken() {
-    this.authService.getToken().then( token => {
+    this.authService.getToken().then(token => {
       this.token = token;
-    })
+    });
   }
-
 }

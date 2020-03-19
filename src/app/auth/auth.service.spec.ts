@@ -3,11 +3,11 @@ import { AuthService } from './auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
-const fakeAuthState = new BehaviorSubject(null);
+let fakeAuthState: BehaviorSubject<boolean>;
 let fakeCredentials;
 let fakeUser;
 
-const fakeSignInHandler = (email, password): Promise<any> => {
+const fakeSignInHandler = (): Promise<any> => {
   fakeAuthState.next(fakeUser);
   return Promise.resolve({});
 };
@@ -17,41 +17,48 @@ const fakeSignOutHandler = (): Promise<any> => {
   return Promise.resolve();
 };
 
-const angularFireAuthStub = {
-  authState: fakeAuthState,
-  auth: {
-    createUserWithEmailAndPassword: jasmine
-      .createSpy('createUserWithEmailAndPassword')
-      .and.callFake(fakeSignInHandler),
-    signInWithEmailAndPassword: jasmine
-      .createSpy('signInWithEmailAndPassword')
-      .and.callFake(fakeSignInHandler),
-    signOut: jasmine.createSpy('signOut').and.callFake(fakeSignOutHandler),
-    currentUser: {
-      getIdToken: jasmine.createSpy('getIdToken')
-    }
-  }
-};
+let angularFireAuthSpy;
 
 describe('AuthService', () => {
   let serviceUnderTest: AuthService;
   let afAuth: AngularFireAuth;
-  let isAuthRef = false;
+  let isAuthRef: boolean;
   let isAuth$: Subscription;
 
   Given(() => {
+    fakeCredentials = undefined;
+    fakeUser = undefined;
+    isAuthRef = false;
+    fakeAuthState = new BehaviorSubject(null);
+
+    angularFireAuthSpy = {
+      authState: fakeAuthState,
+      auth: {
+        createUserWithEmailAndPassword: jasmine
+          .createSpy('createUserWithEmailAndPassword')
+          .and.callFake(fakeSignInHandler),
+        signInWithEmailAndPassword: jasmine
+          .createSpy('signInWithEmailAndPassword')
+          .and.callFake(fakeSignInHandler),
+        signOut: jasmine.createSpy('signOut').and.callFake(fakeSignOutHandler),
+        currentUser: {
+          getIdToken: jasmine.createSpy('getIdToken')
+        }
+      }
+    };
+
     TestBed.configureTestingModule({
       providers: [
         AuthService,
         {
           provide: AngularFireAuth,
-          useValue: angularFireAuthStub
+          useValue: angularFireAuthSpy
         }
       ]
     });
     serviceUnderTest = TestBed.get(AuthService);
     afAuth = TestBed.get(AngularFireAuth);
-    // Get auth subscription
+    // Get auth subscription & listen to the authState
     isAuth$ = serviceUnderTest.authState$.subscribe(authResult => {
       isAuthRef = authResult;
     });
@@ -145,8 +152,6 @@ describe('AuthService', () => {
   });
 
   afterEach(() => {
-    fakeAuthState.next(null);
-
     isAuth$.unsubscribe();
   });
 });

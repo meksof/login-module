@@ -4,11 +4,10 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators/map';
 @Injectable()
 export class AuthService {
-  public get authState$(): Observable<boolean> {
+  get authState$(): Observable<boolean> {
     return this.afAuth.authState.pipe(map(user => user !== null));
   }
   constructor(private afAuth: AngularFireAuth) {}
-
   signupUser(
     email: string,
     password: string

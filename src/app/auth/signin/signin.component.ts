@@ -35,7 +35,7 @@ export class SigninComponent implements OnInit {
     const password = this.loginForm.value.password;
     this.submitting = true;
     this.authService.signinUser(email, password).then(
-      result => {
+      () => {
         this.submitting = false;
         this.router.navigate(['/']);
       },
